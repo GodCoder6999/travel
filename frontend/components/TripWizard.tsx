@@ -486,7 +486,7 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {tab === "itinerary" && <Itinerary plan={plan} />}
+                  {tab === "itinerary" && <Itinerary plan={plan} format={format} />}
                   {tab === "flights" && <FlightsList plan={plan} format={format} />}
                   {tab === "hotels" && <HotelsList plan={plan} format={format} />}
                   {tab === "attractions" && <AttractionsList plan={plan} />}
@@ -682,7 +682,7 @@ function ResultsHeader({ plan, format, onEdit }: { plan: TripPlan; format: (n: n
   );
 }
 
-function Itinerary({ plan }: { plan: TripPlan }) {
+function Itinerary({ plan, format }: { plan: TripPlan; format: (n: number) => string }) {
   const [openDay, setOpenDay] = useState<number | null>(1);
   if (!plan.itinerary || plan.itinerary.length === 0) {
     return <div className="text-mist/50">No itinerary yet — set valid dates and try again.</div>;
@@ -708,13 +708,15 @@ function Itinerary({ plan }: { plan: TripPlan }) {
               </div>
               <div className="flex items-center gap-4 shrink-0">
                 <div className="hidden sm:flex -space-x-2">
-                  {d.items.filter((x) => x.image).slice(0, 4).map((it, k) => (
+                  {d.items.filter((x) => x.image && x.kind !== "transit").slice(0, 4).map((it, k) => (
                     <img key={k} src={it.image} alt=""
                       className="h-9 w-9 rounded-full object-cover ring-2 ring-ink" />
                   ))}
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-mist/50">{d.items.length} stops</div>
+                  <div className="text-xs text-mist/50">
+                    {d.items.filter((x) => x.kind !== "transit").length} stops
+                  </div>
                   <ChevronRight className={cn("h-4 w-4 text-mist/60 transition", open && "rotate-90")} />
                 </div>
               </div>
@@ -729,8 +731,13 @@ function Itinerary({ plan }: { plan: TripPlan }) {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <div className="px-5 md:px-6 pb-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {d.items.map((it, j) => <ItineraryCard key={j} it={it} />)}
+                  <div className="px-5 md:px-6 pb-6">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {d.items.filter((x) => x.kind !== "transit").map((it, j) => (
+                        <ItineraryCard key={j} it={it} />
+                      ))}
+                    </div>
+                    <DayTimeline items={d.items} format={format} />
                   </div>
                 </motion.div>
               )}
@@ -739,6 +746,58 @@ function Itinerary({ plan }: { plan: TripPlan }) {
         );
       })}
     </div>
+  );
+}
+
+function DayTimeline({ items, format }: { items: ItineraryDayItem[]; format: (n: number) => string }) {
+  return (
+    <div className="mt-6 rounded-2xl bg-white/[0.02] ring-1 ring-white/5 p-4 md:p-5">
+      <div className="text-[10px] uppercase tracking-[0.3em] text-mist/40 mb-3">Day route</div>
+      <ol className="relative border-l border-white/10 ml-2 space-y-3 pl-5">
+        {items.map((it, j) => (
+          <li key={j} className="relative">
+            <span className={cn(
+              "absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-ink",
+              it.kind === "attraction" && "bg-coral",
+              it.kind === "meal" && "bg-aurora",
+              it.kind === "transit" && "bg-ocean",
+              it.kind === "rest" && "bg-sand",
+              it.kind === "hotel" && "bg-plum",
+            )} />
+            <div className="flex items-baseline gap-3 flex-wrap text-sm">
+              <span className="font-mono text-xs text-mist/55 w-12 shrink-0">{it.time}</span>
+              {it.kind === "transit" ? (
+                <TransitPill it={it} format={format} />
+              ) : (
+                <>
+                  <span className="font-medium">{it.title}</span>
+                  {it.duration_min ? (
+                    <span className="text-xs text-mist/40">
+                      · {Math.round(it.duration_min / 60 * 10) / 10}h
+                    </span>
+                  ) : null}
+                </>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function TransitPill({ it, format }: { it: ItineraryDayItem; format: (n: number) => string }) {
+  const km = it.transit_distance_km;
+  const mins = it.duration_min;
+  const cost = it.transit_cost_usd;
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs text-mist/75">
+      <span className="text-base leading-none">{it.title.split(" ")[0]}</span>
+      <span className="capitalize">{it.transit_mode || "transit"}</span>
+      {km ? <span className="text-mist/45">· {km} km</span> : null}
+      {mins ? <span className="text-mist/45">· {mins} min</span> : null}
+      {cost && cost > 0 ? <span className="text-mist/45">· {format(cost)}</span> : null}
+    </span>
   );
 }
 

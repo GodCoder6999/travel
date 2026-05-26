@@ -7,6 +7,17 @@ from typing import Optional
 from .models import (
     AttractionResult, HotelResult, ItineraryDay, ItineraryDayItem, Preferences,
 )
+from .transit import build_segment, order_by_proximity
+
+
+def _add_minutes(hhmm: str, minutes: int) -> str:
+    try:
+        h, m = hhmm.split(":")
+        total = int(h) * 60 + int(m) + minutes
+        total %= 24 * 60
+        return f"{total // 60:02d}:{total % 60:02d}"
+    except Exception:
+        return hhmm
 
 
 INTEREST_TO_CAT: dict[str, set[str]] = {
@@ -131,11 +142,30 @@ def build_itinerary(
     ranked = filter_attractions(attractions, prefs, top=days * per_day + 4)
     picked_hotel = hotels[0] if hotels else None
 
+    hotel_pt = (picked_hotel.lat, picked_hotel.lng) if picked_hotel else (None, None)
+
     out: list[ItineraryDay] = []
     idx = 0
     for d in range(days):
-        cur = d0 + timedelta(days=d)
+        cur_date = d0 + timedelta(days=d)
         items: list[ItineraryDayItem] = []
+
+        # Build raw attractions for this day, then proximity-sort.
+        raw_attrs = ranked[idx: idx + per_day]
+        idx += per_day
+        raw_items: list[ItineraryDayItem] = []
+        for a in raw_attrs:
+            kind = _kind_for(a.category)
+            raw_items.append(ItineraryDayItem(
+                time="—", title=a.name, kind=kind,
+                note=a.description or f"{a.category or 'Point of interest'}",
+                category=a.category, rating=a.rating,
+                lat=a.lat, lng=a.lng, image=a.image,
+                duration_min=DURATION_BY_KIND.get(kind, 75),
+            ))
+        ordered = order_by_proximity(hotel_pt, raw_items) if hotel_pt[0] is not None else raw_items
+
+        # Arrival day: check-in first.
         if d == 0:
             items.append(ItineraryDayItem(
                 time="14:00",
@@ -149,22 +179,35 @@ def build_itinerary(
                 category="Hotel" if picked_hotel else None,
                 duration_min=60,
             ))
-        slot_times = ["09:30", "12:30", "15:00", "17:30", "20:00"]
-        day_attr = ranked[idx: idx + per_day]
-        idx += per_day
-        for i, a in enumerate(day_attr):
-            t = slot_times[i] if i < len(slot_times) else "—"
-            kind = _kind_for(a.category)
-            items.append(ItineraryDayItem(
-                time=t, title=a.name,
-                kind=kind,
-                note=a.description or f"{a.category or 'Point of interest'}",
-                category=a.category,
-                rating=a.rating,
-                lat=a.lat, lng=a.lng,
-                image=a.image,
-                duration_min=DURATION_BY_KIND.get(kind, 75),
-            ))
+            clock = "15:30"
+            prev_pt = hotel_pt
+        else:
+            clock = "09:00"
+            prev_pt = hotel_pt  # day starts from hotel
+
+        # Insert transit + attraction pairs, advancing clock realistically.
+        for stop in ordered:
+            stop_pt = (stop.lat, stop.lng)
+            seg = build_segment(prev_pt, stop_pt, target_time=clock)
+            if seg:
+                seg.time = clock
+                clock = _add_minutes(clock, seg.duration_min or 15)
+                items.append(seg)
+            stop.time = clock
+            items.append(stop)
+            clock = _add_minutes(clock, stop.duration_min or 75)
+            if stop.lat is not None and stop.lng is not None:
+                prev_pt = stop_pt
+
+        # Return to hotel at end of day if we wandered.
+        if d < days - 1 and ordered and hotel_pt[0] is not None and prev_pt != hotel_pt:
+            back = build_segment(prev_pt, hotel_pt, target_time=clock)
+            if back:
+                back.title = back.title.replace("Walk", "Walk back").replace("Metro", "Metro back")
+                back.title = back.title if "back" in back.title else f"{back.title} → hotel"
+                items.append(back)
+
+        # Departure day: checkout + airport transfer.
         if d == days - 1:
             items.append(ItineraryDayItem(
                 time="11:00",
@@ -172,17 +215,19 @@ def build_itinerary(
                 kind="transit",
                 note="Allow at least 3 hours before international departure.",
                 duration_min=90,
+                lat=picked_hotel.lat if picked_hotel else None,
+                lng=picked_hotel.lng if picked_hotel else None,
             ))
-        elif not day_attr:
+        elif not ordered:
             items.append(ItineraryDayItem(time="—", title="Free day · explore at your pace", kind="rest"))
 
         summary = (
             "Arrival day · settle in, evening stroll." if d == 0
             else "Departure day · last bites & souvenirs." if d == days - 1
-            else f"{prefs.pace.title()} day · {len(day_attr)} highlights."
+            else f"{prefs.pace.title()} day · {len(ordered)} highlights."
         )
         out.append(ItineraryDay(
-            day=d + 1, date=cur.isoformat(),
+            day=d + 1, date=cur_date.isoformat(),
             summary=summary, items=items,
             hotel=picked_hotel if d < days - 1 else None,
         ))

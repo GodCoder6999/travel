@@ -108,6 +108,11 @@ class ItineraryDayItem(BaseModel):
     lat: Optional[float] = None
     lng: Optional[float] = None
     duration_min: Optional[int] = None
+    transit_mode: Optional[str] = None     # walk | metro | taxi | train | flight | drive
+    transit_distance_km: Optional[float] = None
+    transit_cost_usd: Optional[float] = None
+    from_lat: Optional[float] = None
+    from_lng: Optional[float] = None
 
 
 class ItineraryDay(BaseModel):

@@ -36,6 +36,11 @@ export type ItineraryDayItem = {
   time: string; title: string; kind: string; note?: string;
   image?: string; category?: string; rating?: number;
   lat?: number; lng?: number; duration_min?: number;
+  transit_mode?: "walk" | "metro" | "taxi" | "drive" | "train" | "flight";
+  transit_distance_km?: number;
+  transit_cost_usd?: number;
+  from_lat?: number;
+  from_lng?: number;
 };
 export type ItineraryDay = {
   day: number; date?: string; summary: string;

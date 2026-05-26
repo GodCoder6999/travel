@@ -200,6 +200,35 @@ HUBS = {
 }
 
 
+COUNTRY_HUBS: dict[str, str] = {
+    # Americas
+    "united states": "JFK", "usa": "JFK", "us": "JFK", "america": "JFK",
+    "canada": "YYZ", "mexico": "MEX",
+    "brazil": "GRU", "argentina": "EZE", "chile": "SCL", "peru": "LIM",
+    "colombia": "BOG",
+    # Europe
+    "united kingdom": "LHR", "uk": "LHR", "great britain": "LHR",
+    "england": "LHR", "scotland": "EDI", "ireland": "DUB",
+    "france": "CDG", "germany": "FRA", "italy": "FCO", "spain": "MAD",
+    "portugal": "LIS", "netherlands": "AMS", "belgium": "BRU",
+    "switzerland": "ZRH", "austria": "VIE", "greece": "ATH",
+    "czech republic": "PRG", "czechia": "PRG", "hungary": "BUD",
+    "poland": "WAW", "denmark": "CPH", "sweden": "ARN", "norway": "OSL",
+    "finland": "HEL", "iceland": "KEF", "russia": "SVO", "turkey": "IST",
+    # Middle East / Africa
+    "uae": "DXB", "united arab emirates": "DXB", "qatar": "DOH",
+    "saudi arabia": "RUH", "israel": "TLV",
+    "egypt": "CAI", "morocco": "CMN", "south africa": "JNB", "kenya": "NBO",
+    # Asia / Pacific
+    "japan": "HND", "south korea": "ICN", "korea": "ICN", "china": "PEK",
+    "hong kong": "HKG", "taiwan": "TPE", "singapore": "SIN",
+    "thailand": "BKK", "malaysia": "KUL", "vietnam": "SGN",
+    "indonesia": "CGK", "philippines": "MNL",
+    "india": "DEL", "bangladesh": "DAC", "nepal": "KTM", "sri lanka": "CMB",
+    "australia": "SYD", "new zealand": "AKL",
+}
+
+
 def resolve_city_to_iata(query: str) -> Optional[str]:
     """
     Map a city / country / loose string to its primary IATA code.
@@ -234,7 +263,17 @@ def resolve_city_to_iata(query: str) -> Optional[str]:
         cands.sort(key=lambda a: (0 if a["iata"] in HUBS else 1, a["iata"]))
         return cands[0]["iata"]
 
-    return pick_best(exact_city) or pick_best(starts_with) or pick_best(contains)
+    hit = pick_best(exact_city) or pick_best(starts_with) or pick_best(contains)
+    if hit:
+        return hit
+
+    # Country / region name fallback → primary hub.
+    if ql in COUNTRY_HUBS:
+        return COUNTRY_HUBS[ql]
+    for country, hub in COUNTRY_HUBS.items():
+        if ql.startswith(country) or country in ql:
+            return hub
+    return None
 
 
 # Cache type for Optional import.
