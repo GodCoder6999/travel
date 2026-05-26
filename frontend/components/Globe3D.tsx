@@ -1,6 +1,6 @@
 "use client";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Stars, Sphere, OrbitControls, Float } from "@react-three/drei";
+import { Sphere, OrbitControls, Float } from "@react-three/drei";
 import { useRef, useMemo } from "react";
 import * as THREE from "three";
 
@@ -11,13 +11,13 @@ function EarthLike({ scrollY }: { scrollY: { current: number } }) {
     canvas.width = 1024; canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
     const grad = ctx.createLinearGradient(0, 0, 1024, 512);
-    grad.addColorStop(0, "#0c4b8e");
-    grad.addColorStop(0.4, "#1e6fb8");
-    grad.addColorStop(0.7, "#0a9396");
-    grad.addColorStop(1, "#08305a");
+    grad.addColorStop(0, "#5b9fcd");
+    grad.addColorStop(0.4, "#7ec0e0");
+    grad.addColorStop(0.7, "#a8d8ef");
+    grad.addColorStop(1, "#6cb3d8");
     ctx.fillStyle = grad; ctx.fillRect(0, 0, 1024, 512);
     // fake continents
-    ctx.fillStyle = "#3a7d44";
+    ctx.fillStyle = "#7fa57a";
     for (let i = 0; i < 60; i++) {
       const x = Math.random() * 1024, y = Math.random() * 512;
       const r = 30 + Math.random() * 120;
@@ -54,7 +54,7 @@ function EarthLike({ scrollY }: { scrollY: { current: number } }) {
         <meshStandardMaterial map={tex} roughness={0.7} metalness={0.15} />
       </Sphere>
       <Sphere args={[1.66, 64, 64]}>
-        <meshBasicMaterial color="#7c3aed" transparent opacity={0.07} side={THREE.BackSide} />
+        <meshBasicMaterial color="#f5b94e" transparent opacity={0.10} side={THREE.BackSide} />
       </Sphere>
     </group>
   );
@@ -75,15 +75,15 @@ function Plane({ scrollY }: { scrollY: { current: number } }) {
     <group ref={ref}>
       <mesh>
         <boxGeometry args={[0.35, 0.08, 0.08]} />
-        <meshStandardMaterial color="#ff5a5f" emissive="#ff5a5f" emissiveIntensity={0.4} />
+        <meshStandardMaterial color="#ff6a5b" emissive="#ff6a5b" emissiveIntensity={0.3} />
       </mesh>
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[0.08, 0.02, 0.4]} />
-        <meshStandardMaterial color="#f5f3ee" />
+        <meshStandardMaterial color="#fff9ee" />
       </mesh>
       <mesh position={[-0.12, 0.02, 0]}>
         <boxGeometry args={[0.06, 0.06, 0.15]} />
-        <meshStandardMaterial color="#f5f3ee" />
+        <meshStandardMaterial color="#fff9ee" />
       </mesh>
     </group>
   );
@@ -92,10 +92,9 @@ function Plane({ scrollY }: { scrollY: { current: number } }) {
 export default function Globe3D({ scrollY }: { scrollY: { current: number } }) {
   return (
     <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5.2], fov: 45 }}>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 3, 5]} intensity={1.2} color="#fff" />
-      <directionalLight position={[-5, -2, -3]} intensity={0.4} color="#7c3aed" />
-      <Stars radius={60} depth={40} count={3500} factor={3} fade speed={0.6} />
+      <ambientLight intensity={0.9} />
+      <directionalLight position={[5, 3, 5]} intensity={1.4} color="#fff5e0" />
+      <directionalLight position={[-5, -2, -3]} intensity={0.5} color="#5b9fcd" />
       <Float speed={1.2} floatIntensity={0.4} rotationIntensity={0.3}>
         <EarthLike scrollY={scrollY} />
       </Float>

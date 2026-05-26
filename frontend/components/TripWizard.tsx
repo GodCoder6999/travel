@@ -9,6 +9,7 @@ import {
 import { cn } from "@/lib/cn";
 import { Autocomplete, Suggestion } from "./Autocomplete";
 import { useRegion } from "@/lib/region";
+import { TransportIcon } from "./TransportIcon";
 
 type State = {
   origin: string;
@@ -230,18 +231,18 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
     <section ref={ref} id="plan" className="section-pad relative">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 text-center">
-          <div className="text-xs uppercase tracking-[0.4em] text-mist/40 mb-4">Plan, step by step</div>
+          <div className="text-xs uppercase tracking-[0.4em] text-inkmist mb-4">Plan, step by step</div>
           <h2 className="h-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-balance">
             Tell us how you <span className="italic txt-gradient">travel.</span>
           </h2>
-          <p className="mt-4 text-sm text-mist/50">
-            Prices in <span className="font-mono text-mist/80">{region.currency}</span> · region {region.flag} {region.label}
+          <p className="mt-4 text-sm text-inkmist">
+            Prices in <span className="font-mono text-ink">{region.currency}</span> · region {region.flag} {region.label}
           </p>
         </div>
 
         <Stepper step={Math.min(step, STEPS.length - 1)} total={STEPS.length} hasPlan={!!plan} />
 
-        <div className="mt-8 glass rounded-3xl p-5 md:p-8 ring-1 ring-white/10 shadow-2xl"
+        <div className="mt-8 glass rounded-3xl p-5 md:p-8 ring-1 ring-ink/15 shadow-2xl"
              style={{ overflow: "visible" }}>
           <AnimatePresence mode="wait">
             {step === 0 && (
@@ -262,12 +263,12 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
                   />
                   <DateField label="Depart" value={state.depart} onChange={(v) => set("depart", v)} />
                   <DateField label="Return" value={state.ret} onChange={(v) => set("ret", v)} />
-                  <div className="rounded-xl bg-white/[0.03] ring-1 ring-white/10 px-4 py-2.5 flex flex-col justify-center">
-                    <div className="text-[10px] uppercase tracking-[0.25em] text-mist/40">Length</div>
+                  <div className="rounded-xl bg-cream border border-ink/15 px-4 py-2.5 flex flex-col justify-center">
+                    <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist">Length</div>
                     <div className="mt-0.5 font-medium">{nights} night{nights > 1 ? "s" : ""}</div>
                   </div>
                 </div>
-                <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-mist/40">
+                <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-inkmist">
                   <span className="uppercase tracking-widest">Popular:</span>
                   {POPULAR_DESTS.map((d) => (
                     <button
@@ -275,7 +276,7 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
                       onClick={() => { set("destination", d); set("destination_label", d); }}
                       className={cn(
                         "rounded-full px-3 py-1 transition",
-                        state.destination === d ? "bg-mist text-ink" : "bg-white/5 hover:bg-white/10 text-mist/70"
+                        state.destination === d ? "bg-ink text-cream" : "bg-paper hover:bg-paper text-ink"
                       )}
                     >{d}</button>
                   ))}
@@ -301,10 +302,10 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
                   <NumberField label="Travelers" value={state.pax} onChange={(n) => set("pax", n)} min={1} max={12} />
                 </div>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="rounded-xl bg-white/[0.03] ring-1 ring-white/10 px-4 py-2.5">
-                    <div className="text-[10px] uppercase tracking-[0.25em] text-mist/40">Passport</div>
+                  <div className="rounded-xl bg-cream border border-ink/15 px-4 py-2.5">
+                    <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist">Passport</div>
                     <div className="mt-0.5 font-medium">{region.flag} {region.nationality}</div>
-                    <div className="text-xs text-mist/40">Auto-selected from region · change in nav.</div>
+                    <div className="text-xs text-inkmist">Auto-selected from region · change in nav.</div>
                   </div>
                   <Toggle label="Nonstop only" v={state.prefs.nonstop_only} onChange={(b) => setPref("nonstop_only", b)} />
                   <Toggle label="Accessible travel" v={state.prefs.accessible} onChange={(b) => setPref("accessible", b)} />
@@ -425,7 +426,7 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
               <button
                 onClick={() => setStep((s) => Math.max(0, s - 1))}
                 disabled={step === 0 || loading}
-                className="inline-flex items-center gap-2 rounded-full glass px-5 py-2.5 hover:bg-white/10 disabled:opacity-40 transition"
+                className="inline-flex items-center gap-2 rounded-full glass px-5 py-2.5 hover:bg-paper disabled:opacity-40 transition"
               >
                 <ChevronLeft className="h-4 w-4" /> Back
               </button>
@@ -433,7 +434,7 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
                 <button
                   onClick={() => setStep((s) => Math.min(STEPS.length - 1, s + 1))}
                   disabled={!canNext}
-                  className="inline-flex items-center gap-2 rounded-full bg-mist text-ink px-5 py-2.5 font-medium hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 transition"
+                  className="inline-flex items-center gap-2 rounded-full bg-ink text-cream px-5 py-2.5 font-medium hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 transition"
                 >
                   Next <ChevronRight className="h-4 w-4" />
                 </button>
@@ -441,13 +442,13 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
                 <button
                   onClick={submit}
                   disabled={loading}
-                  className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full bg-mist text-ink px-7 py-3 font-medium hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 transition"
+                  className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full bg-ink text-cream px-7 py-3 font-medium hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 transition"
                 >
                   <span className="relative z-10 inline-flex items-center gap-2">
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                     {loading ? "Building your trip…" : "Plan my trip"}
                   </span>
-                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-coral via-plum to-aurora opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition duration-500" />
+                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-coral via-sun to-sage opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition duration-500" />
                 </button>
               )}
             </div>
@@ -471,7 +472,7 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
                     onClick={() => setTab(t)}
                     className={cn(
                       "rounded-full px-5 py-2 text-sm capitalize transition",
-                      tab === t ? "bg-mist text-ink" : "glass hover:bg-white/10"
+                      tab === t ? "bg-ink text-cream" : "glass hover:bg-paper"
                     )}
                   >
                     {t}{t !== "itinerary" ? ` (${(plan as any)[t]?.length ?? 0})` : (plan.itinerary?.length ? ` (${plan.itinerary.length} days)` : "")}
@@ -515,15 +516,15 @@ function Stepper({ step, total, hasPlan }: { step: number; total: number; hasPla
           <div key={s} className="flex-1 flex items-center gap-2">
             <div className={cn(
               "h-7 w-7 rounded-full text-xs flex items-center justify-center ring-1 transition shrink-0",
-              done ? "bg-aurora text-ink ring-aurora" :
-              active ? "bg-mist text-ink ring-mist" :
-              "bg-white/5 text-mist/60 ring-white/15"
+              done ? "bg-sage text-cream ring-sage" :
+              active ? "bg-ink text-cream ring-ink" :
+              "bg-cream text-inkmist ring-ink/20"
             )}>
               {done ? <Check className="h-4 w-4" /> : i + 1}
             </div>
-            <div className={cn("hidden sm:block text-xs uppercase tracking-widest", active ? "text-mist" : "text-mist/40")}>{s}</div>
+            <div className={cn("hidden sm:block text-xs uppercase tracking-widest", active ? "text-ink" : "text-inkmist")}>{s}</div>
             {i < total - 1 && (
-              <div className={cn("flex-1 h-px transition", done ? "bg-aurora/50" : "bg-white/10")} />
+              <div className={cn("flex-1 h-px transition", done ? "bg-sage/60" : "bg-ink/10")} />
             )}
           </div>
         );
@@ -549,7 +550,7 @@ function StepHeader({ title, sub }: { title: string; sub: string }) {
   return (
     <div className="mb-6">
       <h3 className="h-display text-3xl sm:text-4xl">{title}</h3>
-      <p className="mt-1 text-sm text-mist/55">{sub}</p>
+      <p className="mt-1 text-sm text-inkmist">{sub}</p>
     </div>
   );
 }
@@ -557,7 +558,7 @@ function StepHeader({ title, sub }: { title: string; sub: string }) {
 function Section({ title, icon, children }: { title: string; icon?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="mt-5 first:mt-0">
-      <div className="text-[10px] uppercase tracking-[0.3em] text-mist/40 mb-2 flex items-center gap-2">
+      <div className="text-[10px] uppercase tracking-[0.3em] text-inkmist mb-2 flex items-center gap-2">
         {icon} {title}
       </div>
       {children}
@@ -583,8 +584,8 @@ function ChipRow({
             className={cn(
               "rounded-full px-4 py-1.5 text-sm transition border",
               isActive
-                ? "bg-mist text-ink border-mist"
-                : "border-white/10 bg-white/[0.03] text-mist/75 hover:bg-white/10"
+                ? "bg-ink text-cream border-ink"
+                : "border-ink/15 bg-cream text-ink hover:bg-paper"
             )}
           >
             {it.label}
@@ -597,22 +598,22 @@ function ChipRow({
 
 function DateField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
-    <label className="rounded-xl bg-white/[0.03] ring-1 ring-white/10 px-4 py-2.5 block focus-within:ring-mist/40 transition">
-      <div className="text-[10px] uppercase tracking-[0.25em] text-mist/40 flex items-center gap-1.5"><Calendar className="h-3 w-3" /> {label}</div>
+    <label className="rounded-xl bg-cream border border-ink/15 px-4 py-2.5 block focus-within:ring-ink/30 transition">
+      <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist flex items-center gap-1.5"><Calendar className="h-3 w-3" /> {label}</div>
       <input type="date" value={value} onChange={(e) => onChange(e.target.value)}
-        className="mt-0.5 w-full bg-transparent outline-none text-mist [color-scheme:dark]" />
+        className="mt-0.5 w-full bg-transparent outline-none text-ink [color-scheme:light]" />
     </label>
   );
 }
 
 function NumberField({ label, value, onChange, min = 1, max = 10 }: { label: string; value: number; onChange: (n: number) => void; min?: number; max?: number }) {
   return (
-    <div className="rounded-xl bg-white/[0.03] ring-1 ring-white/10 px-4 py-2.5">
-      <div className="text-[10px] uppercase tracking-[0.25em] text-mist/40 flex items-center gap-1.5"><Users className="h-3 w-3" /> {label}</div>
+    <div className="rounded-xl bg-cream border border-ink/15 px-4 py-2.5">
+      <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist flex items-center gap-1.5"><Users className="h-3 w-3" /> {label}</div>
       <div className="mt-1 flex items-center gap-3">
-        <button onClick={() => onChange(Math.max(min, value - 1))} className="h-7 w-7 rounded-full bg-white/5 hover:bg-white/10 transition">−</button>
+        <button onClick={() => onChange(Math.max(min, value - 1))} className="h-7 w-7 rounded-full bg-paper hover:bg-paper transition">−</button>
         <span className="font-medium tabular-nums w-6 text-center">{value}</span>
-        <button onClick={() => onChange(Math.min(max, value + 1))} className="h-7 w-7 rounded-full bg-white/5 hover:bg-white/10 transition">+</button>
+        <button onClick={() => onChange(Math.min(max, value + 1))} className="h-7 w-7 rounded-full bg-paper hover:bg-paper transition">+</button>
       </div>
     </div>
   );
@@ -622,12 +623,12 @@ function Toggle({ label, v, onChange }: { label: string; v: boolean; onChange: (
   return (
     <button
       onClick={() => onChange(!v)}
-      className="rounded-xl bg-white/[0.03] ring-1 ring-white/10 px-4 py-2.5 text-left transition hover:bg-white/[0.05]"
+      className="rounded-xl bg-cream border border-ink/15 px-4 py-2.5 text-left transition hover:bg-paper"
     >
-      <div className="text-[10px] uppercase tracking-[0.25em] text-mist/40">{label}</div>
+      <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist">{label}</div>
       <div className="mt-1 flex items-center justify-between">
         <span className="font-medium">{v ? "On" : "Off"}</span>
-        <span className={cn("h-5 w-9 rounded-full transition relative", v ? "bg-aurora" : "bg-white/10")}>
+        <span className={cn("h-5 w-9 rounded-full transition relative", v ? "bg-sage" : "bg-paper")}>
           <span className={cn("absolute top-0.5 h-4 w-4 rounded-full bg-ink transition-all", v ? "left-[18px]" : "left-0.5")} />
         </span>
       </div>
@@ -637,11 +638,11 @@ function Toggle({ label, v, onChange }: { label: string; v: boolean; onChange: (
 
 function SelectField({ label, value, options, onChange }: { label: string; value: string; options: { v: string; l: string }[]; onChange: (v: string) => void }) {
   return (
-    <label className="rounded-xl bg-white/[0.03] ring-1 ring-white/10 px-4 py-2.5 block">
-      <div className="text-[10px] uppercase tracking-[0.25em] text-mist/40">{label}</div>
+    <label className="rounded-xl bg-cream border border-ink/15 px-4 py-2.5 block">
+      <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist">{label}</div>
       <select value={value} onChange={(e) => onChange(e.target.value)}
-        className="mt-0.5 w-full bg-transparent outline-none text-mist appearance-none cursor-pointer">
-        {options.map((o) => <option key={o.v} value={o.v} className="bg-ink">{o.l}</option>)}
+        className="mt-0.5 w-full bg-transparent outline-none text-ink appearance-none cursor-pointer">
+        {options.map((o) => <option key={o.v} value={o.v} className="bg-cream text-ink">{o.l}</option>)}
       </select>
     </label>
   );
@@ -649,13 +650,13 @@ function SelectField({ label, value, options, onChange }: { label: string; value
 
 function Summary({ title, rows }: { title: string; rows: [string, string][] }) {
   return (
-    <div className="rounded-2xl bg-white/[0.03] ring-1 ring-white/10 p-5">
-      <div className="text-[10px] uppercase tracking-[0.3em] text-mist/40 mb-3">{title}</div>
+    <div className="rounded-2xl bg-cream border border-ink/15 p-5">
+      <div className="text-[10px] uppercase tracking-[0.3em] text-inkmist mb-3">{title}</div>
       <dl className="grid grid-cols-1 gap-1.5 text-sm">
         {rows.map(([k, v]) => (
           <div key={k} className="flex items-baseline justify-between gap-3">
-            <dt className="text-mist/50">{k}</dt>
-            <dd className="text-mist text-right truncate">{v}</dd>
+            <dt className="text-inkmist">{k}</dt>
+            <dd className="text-ink text-right truncate">{v}</dd>
           </div>
         ))}
       </dl>
@@ -667,15 +668,15 @@ function ResultsHeader({ plan, format, onEdit }: { plan: TripPlan; format: (n: n
   return (
     <div className="glass rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4">
       <div>
-        <div className="text-xs uppercase tracking-[0.3em] text-mist/40">Estimated total</div>
+        <div className="text-xs uppercase tracking-[0.3em] text-inkmist">Estimated total</div>
         <div className="h-display text-4xl">
           {plan.estimated_total_usd ? format(plan.estimated_total_usd) : "—"}
         </div>
-        <div className="text-sm text-mist/50 mt-1">
+        <div className="text-sm text-inkmist mt-1">
           Based on cheapest flight + hotel × nights. Excludes meals, transit, tickets.
         </div>
       </div>
-      <button onClick={onEdit} className="rounded-full glass px-5 py-2 text-sm hover:bg-white/10 transition">
+      <button onClick={onEdit} className="rounded-full glass px-5 py-2 text-sm hover:bg-paper transition">
         Edit trip
       </button>
     </div>
@@ -685,7 +686,7 @@ function ResultsHeader({ plan, format, onEdit }: { plan: TripPlan; format: (n: n
 function Itinerary({ plan, format }: { plan: TripPlan; format: (n: number) => string }) {
   const [openDay, setOpenDay] = useState<number | null>(1);
   if (!plan.itinerary || plan.itinerary.length === 0) {
-    return <div className="text-mist/50">No itinerary yet — set valid dates and try again.</div>;
+    return <div className="text-inkmist">No itinerary yet — set valid dates and try again.</div>;
   }
   return (
     <div className="grid gap-4">
@@ -696,28 +697,28 @@ function Itinerary({ plan, format }: { plan: TripPlan; format: (n: number) => st
             key={d.day}
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="glass rounded-3xl overflow-hidden ring-1 ring-white/10"
+            className="glass rounded-3xl overflow-hidden ring-1 ring-ink/15"
           >
             <button
               onClick={() => setOpenDay(open ? null : d.day)}
-              className="w-full text-left p-5 md:p-6 flex items-center justify-between gap-4 hover:bg-white/5 transition"
+              className="w-full text-left p-5 md:p-6 flex items-center justify-between gap-4 hover:bg-paper transition"
             >
               <div className="min-w-0">
-                <div className="text-xs uppercase tracking-[0.3em] text-mist/40">Day {d.day} · {d.date}</div>
+                <div className="text-xs uppercase tracking-[0.3em] text-inkmist">Day {d.day} · {d.date}</div>
                 <div className="h-display text-2xl mt-1 truncate">{d.summary}</div>
               </div>
               <div className="flex items-center gap-4 shrink-0">
                 <div className="hidden sm:flex -space-x-2">
                   {d.items.filter((x) => x.image && x.kind !== "transit").slice(0, 4).map((it, k) => (
                     <img key={k} src={it.image} alt=""
-                      className="h-9 w-9 rounded-full object-cover ring-2 ring-ink" />
+                      className="h-9 w-9 rounded-full object-cover ring-2 ring-cream border border-ink/15" />
                   ))}
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-mist/50">
+                  <div className="text-xs text-inkmist">
                     {d.items.filter((x) => x.kind !== "transit").length} stops
                   </div>
-                  <ChevronRight className={cn("h-4 w-4 text-mist/60 transition", open && "rotate-90")} />
+                  <ChevronRight className={cn("h-4 w-4 text-inkmist transition", open && "rotate-90")} />
                 </div>
               </div>
             </button>
@@ -751,28 +752,28 @@ function Itinerary({ plan, format }: { plan: TripPlan; format: (n: number) => st
 
 function DayTimeline({ items, format }: { items: ItineraryDayItem[]; format: (n: number) => string }) {
   return (
-    <div className="mt-6 rounded-2xl bg-white/[0.02] ring-1 ring-white/5 p-4 md:p-5">
-      <div className="text-[10px] uppercase tracking-[0.3em] text-mist/40 mb-3">Day route</div>
-      <ol className="relative border-l border-white/10 ml-2 space-y-3 pl-5">
+    <div className="mt-6 rounded-2xl bg-cream/60 ring-1 ring-ink/10 p-4 md:p-5">
+      <div className="text-[10px] uppercase tracking-[0.3em] text-inkmist mb-3">Day route</div>
+      <ol className="relative border-l border-ink/15 ml-2 space-y-3 pl-5">
         {items.map((it, j) => (
           <li key={j} className="relative">
             <span className={cn(
-              "absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-ink",
+              "absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-cream",
               it.kind === "attraction" && "bg-coral",
-              it.kind === "meal" && "bg-aurora",
-              it.kind === "transit" && "bg-ocean",
-              it.kind === "rest" && "bg-sand",
+              it.kind === "meal" && "bg-sage",
+              it.kind === "transit" && "bg-sky",
+              it.kind === "rest" && "bg-sun",
               it.kind === "hotel" && "bg-plum",
             )} />
             <div className="flex items-baseline gap-3 flex-wrap text-sm">
-              <span className="font-mono text-xs text-mist/55 w-12 shrink-0">{it.time}</span>
+              <span className="font-mono text-xs text-inkmist w-12 shrink-0">{it.time}</span>
               {it.kind === "transit" ? (
                 <TransitPill it={it} format={format} />
               ) : (
                 <>
                   <span className="font-medium">{it.title}</span>
                   {it.duration_min ? (
-                    <span className="text-xs text-mist/40">
+                    <span className="text-xs text-inkmist">
                       · {Math.round(it.duration_min / 60 * 10) / 10}h
                     </span>
                   ) : null}
@@ -790,21 +791,22 @@ function TransitPill({ it, format }: { it: ItineraryDayItem; format: (n: number)
   const km = it.transit_distance_km;
   const mins = it.duration_min;
   const cost = it.transit_cost_usd;
+  const mode = it.transit_mode as any;
   return (
-    <span className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs text-mist/75">
-      <span className="text-base leading-none">{it.title.split(" ")[0]}</span>
-      <span className="capitalize">{it.transit_mode || "transit"}</span>
-      {km ? <span className="text-mist/45">· {km} km</span> : null}
-      {mins ? <span className="text-mist/45">· {mins} min</span> : null}
-      {cost && cost > 0 ? <span className="text-mist/45">· {format(cost)}</span> : null}
+    <span className="inline-flex items-center gap-2 rounded-full bg-cream border border-ink/15 pl-1 pr-3 py-1 text-xs text-ink shadow-sm">
+      {mode ? <TransportIcon mode={mode} size={28} /> : <span className="text-base leading-none">{it.title.split(" ")[0]}</span>}
+      <span className="capitalize font-medium">{it.transit_mode || "transit"}</span>
+      {km ? <span className="text-inkmist">· {km} km</span> : null}
+      {mins ? <span className="text-inkmist">· {mins} min</span> : null}
+      {cost && cost > 0 ? <span className="text-inkmist">· {format(cost)}</span> : null}
     </span>
   );
 }
 
 function ItineraryCard({ it }: { it: ItineraryDayItem }) {
   const kindColor: Record<string, string> = {
-    attraction: "bg-coral", meal: "bg-aurora", transit: "bg-ocean",
-    rest: "bg-sand", hotel: "bg-plum",
+    attraction: "bg-coral", meal: "bg-sage", transit: "bg-sky",
+    rest: "bg-sun", hotel: "bg-plum",
   };
   const mapHref = it.lat && it.lng
     ? `https://www.google.com/maps/search/?api=1&query=${it.lat},${it.lng}`
@@ -812,41 +814,40 @@ function ItineraryCard({ it }: { it: ItineraryDayItem }) {
   return (
     <motion.a
       href={mapHref} target="_blank" rel="noreferrer"
-      whileHover={{ y: -4 }}
-      className="relative rounded-2xl overflow-hidden bg-white/[0.03] ring-1 ring-white/10 group block"
+      whileHover={{ y: -6, rotate: 0, scale: 1.02 }}
+      className="relative polaroid polaroid-tape group block"
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-white/5">
+      <div className="relative aspect-[16/10] overflow-hidden bg-paper rounded-sm">
         {it.image ? (
           <img src={it.image} alt={it.title}
-            className="h-full w-full object-cover group-hover:scale-110 transition duration-700" />
+            className="h-full w-full object-cover group-hover:scale-105 transition duration-700" />
         ) : (
-          <div className="h-full w-full flex items-center justify-center text-3xl text-mist/30">
+          <div className="h-full w-full flex items-center justify-center text-3xl text-ink/30">
             {it.kind === "transit" ? "✈" : it.kind === "rest" ? "☕" : "◷"}
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/10 to-transparent" />
-        <div className="absolute top-3 left-3 flex items-center gap-2">
-          <span className={cn("inline-block h-2 w-2 rounded-full", kindColor[it.kind] || "bg-mist")} />
-          <span className="text-[10px] uppercase tracking-[0.25em] text-mist/85 rounded-full bg-ink/60 px-2 py-0.5">
+        <div className="absolute top-2 left-2 flex items-center gap-2">
+          <span className={cn("inline-block h-2 w-2 rounded-full ring-1 ring-cream", kindColor[it.kind] || "bg-ink")} />
+          <span className="text-[10px] uppercase tracking-[0.25em] text-ink rounded-full bg-cream/95 border border-ink/15 px-2 py-0.5">
             {it.time}
           </span>
         </div>
         {it.rating && (
-          <div className="absolute top-3 right-3 rounded-full bg-ink/60 px-2 py-0.5 text-[11px] flex items-center gap-1">
-            <Star className="h-3 w-3 fill-current text-aurora" /> {it.rating}
+          <div className="absolute top-2 right-2 rounded-full bg-cream/95 border border-ink/15 px-2 py-0.5 text-[11px] flex items-center gap-1 text-ink">
+            <Star className="h-3 w-3 fill-current text-coral" /> {it.rating}
           </div>
         )}
         {it.duration_min ? (
-          <div className="absolute bottom-3 left-3 rounded-full bg-ink/60 px-2 py-0.5 text-[11px] text-mist/85">
+          <div className="absolute bottom-2 left-2 rounded-full bg-cream/95 border border-ink/15 px-2 py-0.5 text-[11px] text-ink">
             {Math.round(it.duration_min / 60 * 10) / 10}h
           </div>
         ) : null}
       </div>
-      <div className="p-4">
-        <div className="h-display text-lg leading-snug line-clamp-2">{it.title}</div>
-        {it.category && <div className="text-[11px] uppercase tracking-[0.2em] text-mist/45 mt-1">{it.category}</div>}
-        {it.note && <div className="text-xs text-mist/55 mt-2 line-clamp-2">{it.note}</div>}
-        <div className="mt-3 inline-flex items-center gap-1 text-xs text-aurora opacity-0 group-hover:opacity-100 transition">
+      <div className="px-1 pt-3">
+        <div className="h-hand text-2xl leading-tight text-ink line-clamp-2">{it.title}</div>
+        {it.category && <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist mt-0.5">{it.category}</div>}
+        {it.note && <div className="text-xs text-inkmist mt-1.5 line-clamp-2">{it.note}</div>}
+        <div className="mt-2 inline-flex items-center gap-1 text-xs text-coral opacity-0 group-hover:opacity-100 transition">
           <MapPin className="h-3 w-3" /> Open in Maps
         </div>
       </div>
@@ -863,13 +864,13 @@ function TopStrip({ plan }: { plan: TripPlan }) {
         <div className="glass rounded-2xl p-6 flex items-start gap-5">
           <div className="text-5xl shrink-0">{w.icon}</div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs uppercase tracking-[0.3em] text-mist/40 mb-1 flex items-center gap-2"><Sun className="h-3.5 w-3.5" /> Weather · {w.city}</div>
+            <div className="text-xs uppercase tracking-[0.3em] text-inkmist mb-1 flex items-center gap-2"><Sun className="h-3.5 w-3.5" /> Weather · {w.city}</div>
             <div className="text-2xl md:text-3xl h-display">{Math.round(w.temp_c)}°C · {w.condition}</div>
-            <div className="text-sm text-mist/60 mt-1">{w.humidity ?? "—"}% humidity · {w.wind_kph ?? "—"} kph wind</div>
+            <div className="text-sm text-inkmist mt-1">{w.humidity ?? "—"}% humidity · {w.wind_kph ?? "—"} kph wind</div>
             {w.forecast.length > 0 && (
               <div className="mt-3 flex gap-2 flex-wrap">
                 {w.forecast.slice(0, 7).map((d, i) => (
-                  <div key={i} className="rounded-lg bg-white/5 px-2.5 py-1.5 text-xs">
+                  <div key={i} className="rounded-lg bg-paper px-2.5 py-1.5 text-xs">
                     {d.icon} {Math.round(d.min_c)}/{Math.round(d.max_c)}°
                   </div>
                 ))}
@@ -880,10 +881,10 @@ function TopStrip({ plan }: { plan: TripPlan }) {
       )}
       {v && (
         <div className="glass rounded-2xl p-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-mist/40 mb-1 flex items-center gap-2"><Stamp className="h-3.5 w-3.5" /> Visa · {v.nationality} → {v.destination}</div>
+          <div className="text-xs uppercase tracking-[0.3em] text-inkmist mb-1 flex items-center gap-2"><Stamp className="h-3.5 w-3.5" /> Visa · {v.nationality} → {v.destination}</div>
           <div className="text-2xl h-display">{v.required ? "Visa required" : "No visa needed"}</div>
-          <div className="mt-1 text-sm text-mist/70">{v.type}{v.duration_days ? ` · up to ${v.duration_days} days` : ""}</div>
-          {v.notes && <div className="mt-3 text-sm text-mist/55">{v.notes}</div>}
+          <div className="mt-1 text-sm text-ink">{v.type}{v.duration_days ? ` · up to ${v.duration_days} days` : ""}</div>
+          {v.notes && <div className="mt-3 text-sm text-inkmist">{v.notes}</div>}
         </div>
       )}
     </div>
@@ -894,9 +895,9 @@ function FlightsList({ plan, format }: { plan: TripPlan; format: (n: number) => 
   if (!plan.flights.length) {
     return (
       <div className="glass rounded-2xl p-8 text-center">
-        <Plane className="h-8 w-8 text-mist/40 mx-auto mb-3" />
+        <Plane className="h-8 w-8 text-inkmist mx-auto mb-3" />
         <div className="h-display text-2xl mb-2">No flights for this route</div>
-        <div className="text-sm text-mist/55 max-w-md mx-auto">
+        <div className="text-sm text-inkmist max-w-md mx-auto">
           We couldn't find direct flight data for this origin/destination pair.
           Try a major hub (e.g. JFK, LHR, DEL) or a different destination.
         </div>
@@ -907,7 +908,7 @@ function FlightsList({ plan, format }: { plan: TripPlan; format: (n: number) => 
   return (
     <div className="grid gap-3">
       {allSample && (
-        <div className="rounded-2xl border border-amber-300/20 bg-amber-300/[0.04] px-4 py-3 text-xs text-amber-200/85">
+        <div className="rounded-2xl border border-sun/50 bg-sun/15 px-4 py-3 text-xs text-ink">
           Showing estimated fares while live flight data is being configured.
           Tap "Open in Google Flights" for current bookings.
         </div>
@@ -916,7 +917,7 @@ function FlightsList({ plan, format }: { plan: TripPlan; format: (n: number) => 
         <motion.div
           key={i}
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
-          className="glass rounded-2xl p-4 sm:p-5 flex items-center gap-4 sm:gap-6 hover:bg-white/[0.06] transition group"
+          className="glass rounded-2xl p-4 sm:p-5 flex items-center gap-4 sm:gap-6 hover:bg-paper transition group"
         >
           {f.airline_logo ? (
             <img src={f.airline_logo} alt={f.airline} className="h-8 w-8 rounded-lg bg-white object-contain shrink-0" />
@@ -925,27 +926,27 @@ function FlightsList({ plan, format }: { plan: TripPlan; format: (n: number) => 
           )}
           <div className="flex-1 grid grid-cols-2 md:grid-cols-5 gap-3 items-center min-w-0">
             <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-widest text-mist/40">Airline</div>
+              <div className="text-[10px] uppercase tracking-widest text-inkmist">Airline</div>
               <div className="font-medium truncate">{f.airline}</div>
-              <div className="text-xs text-mist/40">
+              <div className="text-xs text-inkmist">
                 {f.flight_no || (f.is_sample ? "estimate" : "")}
                 {f.cabin ? ` · ${f.cabin}` : ""}
               </div>
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-widest text-mist/40">Route</div>
+              <div className="text-[10px] uppercase tracking-widest text-inkmist">Route</div>
               <div className="font-medium truncate">{f.origin} → {f.destination}</div>
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-widest text-mist/40">Times</div>
+              <div className="text-[10px] uppercase tracking-widest text-inkmist">Times</div>
               <div className="font-medium truncate">{f.depart_time} – {f.arrive_time}</div>
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-widest text-mist/40">{f.duration}</div>
+              <div className="text-[10px] uppercase tracking-widest text-inkmist">{f.duration}</div>
               <div className="font-medium truncate">{f.stops === 0 ? "Nonstop" : `${f.stops} stop${f.stops > 1 ? "s" : ""}`}</div>
             </div>
             <div className="text-right">
-              <div className="text-[10px] uppercase tracking-widest text-mist/40">{f.is_sample ? "From" : "Price"}</div>
+              <div className="text-[10px] uppercase tracking-widest text-inkmist">{f.is_sample ? "From" : "Price"}</div>
               <div className="h-display text-xl sm:text-2xl whitespace-nowrap">{format(f.price_usd)}</div>
             </div>
           </div>
@@ -975,21 +976,20 @@ function HotelsList({ plan, format }: { plan: TripPlan; format: (n: number) => s
         >
           <div className="relative aspect-[4/3] overflow-hidden">
             {h.image && <img src={h.image} alt={h.name} className="h-full w-full object-cover group-hover:scale-110 transition duration-700" />}
-            <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent" />
             <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
-              <div className="rounded-full glass px-3 py-1 text-xs whitespace-nowrap">{format(h.price_usd)} / night</div>
-              {h.rating && <div className="rounded-full glass px-3 py-1 text-xs flex items-center gap-1 whitespace-nowrap"><Star className="h-3 w-3 fill-current text-aurora" /> {h.rating}</div>}
+              <div className="rounded-full bg-cream/95 border border-ink/15 px-3 py-1 text-xs whitespace-nowrap text-ink">{format(h.price_usd)} / night</div>
+              {h.rating && <div className="rounded-full bg-cream/95 border border-ink/15 px-3 py-1 text-xs flex items-center gap-1 whitespace-nowrap text-ink"><Star className="h-3 w-3 fill-current text-coral" /> {h.rating}</div>}
             </div>
           </div>
           <div className="p-5">
             <div className="h-display text-xl mb-1 line-clamp-2">{h.name}</div>
-            {h.address && <div className="text-xs text-mist/50 flex items-center gap-1 mb-2 truncate"><MapPin className="h-3 w-3 shrink-0" /> <span className="truncate">{h.address}</span></div>}
+            {h.address && <div className="text-xs text-inkmist flex items-center gap-1 mb-2 truncate"><MapPin className="h-3 w-3 shrink-0" /> <span className="truncate">{h.address}</span></div>}
             <div className="flex gap-1.5 flex-wrap mt-3">
               {h.amenities.slice(0, 4).map((a, j) => (
-                <span key={j} className="rounded-full bg-white/5 px-2.5 py-0.5 text-[11px] text-mist/65">{a}</span>
+                <span key={j} className="rounded-full bg-paper px-2.5 py-0.5 text-[11px] text-inkmist">{a}</span>
               ))}
             </div>
-            {h.deep_link && <a href={h.deep_link} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-sm text-aurora hover:underline">Book <ExternalLink className="h-3.5 w-3.5" /></a>}
+            {h.deep_link && <a href={h.deep_link} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-sm text-coral hover:underline">Book <ExternalLink className="h-3.5 w-3.5" /></a>}
           </div>
         </motion.div>
       ))}
@@ -1004,15 +1004,15 @@ function AttractionsList({ plan }: { plan: TripPlan }) {
         <motion.div
           key={i}
           initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.04 }}
-          className="glass rounded-2xl overflow-hidden hover:ring-1 hover:ring-mist/30 transition"
+          className="glass rounded-2xl overflow-hidden hover:ring-1 hover:ring-ink/30 transition"
         >
           <div className="aspect-square overflow-hidden">
             {a.image && <img src={a.image} alt={a.name} className="h-full w-full object-cover hover:scale-110 transition duration-700" />}
           </div>
           <div className="p-4">
-            <div className="text-[10px] uppercase tracking-[0.25em] text-mist/40">{a.category}</div>
+            <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist">{a.category}</div>
             <div className="h-display text-lg mt-1 line-clamp-2">{a.name}</div>
-            {a.rating && <div className="text-xs text-mist/60 mt-1">★ {a.rating} · {a.reviews?.toLocaleString()} reviews</div>}
+            {a.rating && <div className="text-xs text-inkmist mt-1">★ {a.rating} · {a.reviews?.toLocaleString()} reviews</div>}
           </div>
         </motion.div>
       ))}

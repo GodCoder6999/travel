@@ -23,7 +23,7 @@ function ParallaxImg({ layer, progress, i }: { layer: Layer; progress: MotionVal
       className="absolute aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10"
     >
       <img src={layer.src} alt="" className="h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-paper/30 via-transparent to-transparent" />
     </motion.div>
   );
 }
@@ -38,11 +38,11 @@ export default function Parallax() {
         <ParallaxImg key={i} layer={l} progress={scrollYProgress} i={i} />
       ))}
       <div className="sticky top-1/3 mx-auto w-full max-w-3xl text-center px-6 z-10">
-        <div className="text-xs uppercase tracking-[0.4em] text-mist/40 mb-4">The world, parallaxed</div>
-        <h2 className="h-display text-5xl sm:text-6xl md:text-8xl text-balance">
+        <div className="text-xs uppercase tracking-[0.4em] text-inkmist mb-4">The world, parallaxed</div>
+        <h2 className="h-display text-5xl sm:text-6xl md:text-8xl text-balance text-ink">
           Wander <span className="italic txt-gradient">slower.</span>
         </h2>
-        <p className="mt-4 max-w-md mx-auto text-sm md:text-base text-mist/60 text-balance">
+        <p className="mt-4 max-w-md mx-auto text-sm md:text-base text-inkmist text-balance">
           Cards drift at their own speed as you scroll — same way Voyage lets every part of your trip
           breathe before you commit.
         </p>
