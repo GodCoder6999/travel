@@ -1,39 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
-import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
 
 type Mode = "walk" | "metro" | "taxi" | "drive" | "train" | "flight";
 
-const Icon3D = dynamic(() => import("./TransportIcon3D").then((m) => m.TransportIcon3D), {
-  ssr: false,
-  loading: () => null,
-});
-
-const MODEL_URLS: Record<Mode, string> = {
-  flight: "/models/plane.glb",
-  train:  "/models/train.glb",
-  metro:  "/models/metro.glb",
-  taxi:   "/models/taxi.glb",
-  drive:  "/models/car.glb",
-  walk:   "/models/walker.glb",
-};
-
-function useHas(url: string): boolean | null {
-  const [ok, setOk] = useState<boolean | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    fetch(url, { method: "HEAD" })
-      .then((r) => { if (!cancelled) setOk(r.ok); })
-      .catch(() => { if (!cancelled) setOk(false); });
-    return () => { cancelled = true; };
-  }, [url]);
-  return ok;
-}
-
 export function TransportIcon({ mode, size = 48 }: { mode: Mode; size?: number }) {
-  const has3D = useHas(MODEL_URLS[mode]);
   const Map: Record<Mode, ReactNode> = {
     walk: <WalkIcon size={size} />,
     metro: <MetroIcon size={size} />,
@@ -42,18 +13,7 @@ export function TransportIcon({ mode, size = 48 }: { mode: Mode; size?: number }
     train: <TrainIcon size={size} />,
     flight: <FlightIcon size={size} />,
   };
-  const svg = Map[mode] || <FlightIcon size={size} />;
-  // Stack: SVG always rendered as visible base; 3D Canvas overlays once loaded.
-  return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <div className="absolute inset-0">{svg}</div>
-      {has3D && (
-        <div className="absolute inset-0">
-          <Icon3D mode={mode} size={size} />
-        </div>
-      )}
-    </div>
-  );
+  return Map[mode] || <FlightIcon size={size} />;
 }
 
 const COLORS = {
