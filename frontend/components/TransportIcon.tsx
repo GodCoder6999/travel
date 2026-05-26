@@ -22,6 +22,7 @@ const COLORS = {
   sky: "#5b9fcd",
   sun: "#f5b94e",
   sage: "#7fa57a",
+  plum: "#8b6ad3",
   cream: "#fff9ee",
 };
 
@@ -153,13 +154,13 @@ function DriveIcon({ size }: { size: number }) {
 function MetroIcon({ size }: { size: number }) {
   return (
     <Plate size={size}>
-      <circle cx="32" cy="32" r="30" fill={COLORS.plum ? "#8b6ad3" : "#8b6ad3"} opacity="0.18" />
+      <circle cx="32" cy="32" r="30" fill={COLORS.plum} opacity="0.18" />
       <rect x="8" y="42" width="48" height="2" fill={COLORS.body} opacity="0.3" />
       <motion.g
         animate={{ x: [-4, 4, -4] }}
         transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
       >
-        <rect x="14" y="18" width="36" height="24" rx="10" fill="#8b6ad3" />
+        <rect x="14" y="18" width="36" height="24" rx="10" fill={COLORS.plum} />
         <rect x="18" y="22" width="6" height="8" rx="1" fill={COLORS.cream} />
         <rect x="28" y="22" width="6" height="8" rx="1" fill={COLORS.cream} />
         <rect x="38" y="22" width="6" height="8" rx="1" fill={COLORS.cream} />
