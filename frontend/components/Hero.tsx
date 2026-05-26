@@ -25,16 +25,23 @@ export default function Hero({ onPlan }: { onPlan: () => void }) {
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* Sky gradient */}
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#dfeefc] via-[#fbf6ec] to-[#fff3d8]" />
-        {/* Soft sun */}
+        {/* Soft sun + sky orbs */}
         <div className="absolute top-[12%] right-[12%] w-72 h-72 rounded-full bg-sun/40 blur-3xl" />
         <div className="absolute bottom-[18%] left-[8%] w-80 h-80 rounded-full bg-sky/30 blur-3xl" />
 
-        {/* Globe */}
-        <div className="absolute inset-0 z-0 opacity-90">
-          <Globe3D scrollY={scrollY} />
+        {/* Globe — contained, behind content, with vignette */}
+        <div className="absolute inset-0 z-0">
+          <div className="relative w-full h-full">
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-auto w-[70vmin] h-[70vmin] max-w-[640px] max-h-[640px]">
+              <Globe3D scrollY={scrollY} />
+            </div>
+          </div>
         </div>
 
-        {/* Floating transport stickers */}
+        {/* Soft cream wash so text reads over the globe */}
+        <div className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(251,246,236,0)_30%,rgba(251,246,236,0.6)_55%,rgba(251,246,236,0.95)_85%)]" />
+
+        {/* Floating transport stickers (smaller, edge-anchored) */}
         <FloatingDecorations />
 
         <motion.div
@@ -46,8 +53,10 @@ export default function Hero({ onPlan }: { onPlan: () => void }) {
             A travel diary that plans itself
           </span>
           <div className="h-hand text-3xl text-coral -rotate-2 mb-2">~ dear journal ~</div>
-          <h1 className="h-display font-bold leading-[0.9] tracking-tight text-balance text-ink"
-              style={{ fontSize: "clamp(2.75rem, 11vw, 10rem)" }}>
+          <h1
+            className="h-display font-bold leading-[0.9] tracking-tight text-balance text-ink drop-shadow-[0_2px_8px_rgba(251,246,236,0.85)]"
+            style={{ fontSize: "clamp(2.5rem, 9vw, 8rem)" }}
+          >
             <span className="block">Plan trips</span>
             <span className="block italic txt-gradient">like a wanderer.</span>
           </h1>
@@ -62,7 +71,7 @@ export default function Hero({ onPlan }: { onPlan: () => void }) {
             >
               <span className="relative z-10">Start planning</span>
             </button>
-            <a href="#features" className="rounded-full border-2 border-ink/80 px-6 py-3 hover:bg-ink hover:text-cream transition font-medium">
+            <a href="#features" className="rounded-full border-2 border-ink/80 bg-cream/70 backdrop-blur px-6 py-3 hover:bg-ink hover:text-cream transition font-medium">
               How it works ↓
             </a>
           </div>
@@ -80,32 +89,32 @@ function FloatingDecorations() {
   return (
     <div className="absolute inset-0 z-10 pointer-events-none">
       <motion.div
-        className="absolute top-[14%] left-[6%]"
-        animate={{ y: [0, -12, 0], rotate: [-6, -3, -6] }}
+        className="absolute top-[8%] left-[4%] opacity-90"
+        animate={{ y: [0, -10, 0], rotate: [-4, -1, -4] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       >
-        <TransportIcon mode="flight" size={84} />
+        <TransportIcon mode="flight" size={56} />
       </motion.div>
       <motion.div
-        className="absolute top-[20%] right-[8%]"
-        animate={{ y: [0, 8, 0], rotate: [4, 7, 4] }}
+        className="absolute top-[12%] right-[5%] opacity-90"
+        animate={{ y: [0, 8, 0], rotate: [3, 6, 3] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
       >
-        <TransportIcon mode="train" size={72} />
+        <TransportIcon mode="train" size={56} />
       </motion.div>
       <motion.div
-        className="absolute bottom-[22%] left-[10%]"
-        animate={{ y: [0, -10, 0], rotate: [-8, -5, -8] }}
+        className="absolute bottom-[10%] left-[5%] opacity-90"
+        animate={{ y: [0, -8, 0], rotate: [-6, -3, -6] }}
         transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <TransportIcon mode="taxi" size={68} />
+        <TransportIcon mode="taxi" size={56} />
       </motion.div>
       <motion.div
-        className="absolute bottom-[18%] right-[12%]"
-        animate={{ y: [0, 9, 0], rotate: [3, 8, 3] }}
+        className="absolute bottom-[8%] right-[5%] opacity-90"
+        animate={{ y: [0, 9, 0], rotate: [2, 6, 2] }}
         transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <TransportIcon mode="walk" size={64} />
+        <TransportIcon mode="walk" size={56} />
       </motion.div>
     </div>
   );

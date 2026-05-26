@@ -1,7 +1,7 @@
 "use client";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, Center, Environment } from "@react-three/drei";
-import { Suspense, useRef, useState, useEffect } from "react";
+import { useGLTF, Environment } from "@react-three/drei";
+import { Suspense, useRef, useState, useEffect, useMemo } from "react";
 import * as THREE from "three";
 
 type Mode = "walk" | "metro" | "taxi" | "drive" | "train" | "flight";
@@ -15,21 +15,37 @@ const MODEL_URL: Record<Mode, string> = {
   walk:   "/models/walker.glb",
 };
 
-// Per-mode camera + animation profile
+// Per-mode animation profile (camera handled by auto-fit)
 const PROFILE: Record<Mode, {
-  camY: number; camZ: number; scale: number; spin: number; bobAmp: number; bobSpeed: number; tilt?: number;
+  spin: number; bobAmp: number; bobSpeed: number; tilt?: number;
 }> = {
-  flight: { camY: 0.4, camZ: 2.2, scale: 0.9, spin: 0.6, bobAmp: 0.08, bobSpeed: 1.8, tilt: 0.1 },
-  train:  { camY: 0.6, camZ: 2.6, scale: 0.6, spin: 0.0, bobAmp: 0.02, bobSpeed: 6.0 },
-  metro:  { camY: 0.5, camZ: 2.4, scale: 0.7, spin: 0.0, bobAmp: 0.03, bobSpeed: 4.0 },
-  taxi:   { camY: 0.6, camZ: 2.4, scale: 0.7, spin: 0.4, bobAmp: 0.04, bobSpeed: 5.0 },
-  drive:  { camY: 0.6, camZ: 2.4, scale: 0.7, spin: 0.4, bobAmp: 0.03, bobSpeed: 5.5 },
-  walk:   { camY: 0.7, camZ: 2.2, scale: 0.9, spin: 0.0, bobAmp: 0.06, bobSpeed: 3.5 },
+  flight: { spin: 0.6, bobAmp: 0.08, bobSpeed: 1.8, tilt: 0.1 },
+  train:  { spin: 0.0, bobAmp: 0.02, bobSpeed: 6.0 },
+  metro:  { spin: 0.0, bobAmp: 0.03, bobSpeed: 4.0 },
+  taxi:   { spin: 0.4, bobAmp: 0.04, bobSpeed: 5.0 },
+  drive:  { spin: 0.4, bobAmp: 0.03, bobSpeed: 5.5 },
+  walk:   { spin: 0.0, bobAmp: 0.06, bobSpeed: 3.5 },
 };
+
+// Target fit size — model gets auto-scaled so its largest dimension equals this
+const FIT_SIZE = 1.6;
 
 function GLTFThing({ mode }: { mode: Mode }) {
   const { scene } = useGLTF(MODEL_URL[mode]);
-  const clone = useRef(scene.clone(true)).current;
+  const fitted = useMemo(() => {
+    const c = scene.clone(true);
+    const box = new THREE.Box3().setFromObject(c);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    // Re-center on origin
+    c.position.sub(center);
+    // Scale longest axis to FIT_SIZE
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const s = FIT_SIZE / maxDim;
+    c.scale.setScalar(s);
+    return c;
+  }, [scene]);
+
   const ref = useRef<THREE.Group>(null!);
   const p = PROFILE[mode];
   useFrame(({ clock }) => {
@@ -40,11 +56,9 @@ function GLTFThing({ mode }: { mode: Mode }) {
     ref.current.position.y = Math.sin(t * p.bobSpeed) * p.bobAmp;
   });
   return (
-    <Center>
-      <group ref={ref} scale={p.scale}>
-        <primitive object={clone} />
-      </group>
-    </Center>
+    <group ref={ref}>
+      <primitive object={fitted} />
+    </group>
   );
 }
 
@@ -67,12 +81,11 @@ export function TransportIcon3D({ mode, size = 64 }: { mode: Mode; size?: number
   if (have === null) {
     return <div style={{ width: size, height: size }} />; // probe pending
   }
-  const p = PROFILE[mode];
   return (
     <div style={{ width: size, height: size }} className="inline-block">
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [0, p.camY, p.camZ], fov: 35 }}
+        camera={{ position: [0, 0.4, 2.6], fov: 30 }}
         frameloop="always"
         gl={{ alpha: true, antialias: true }}
       >
