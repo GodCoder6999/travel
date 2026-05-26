@@ -20,9 +20,10 @@ out/
 .env.*.local
 *.env
 
-# Editor
+# Editor + Claude
 .vscode/
 .idea/
+.claude/
 *.swp
 .DS_Store
 Thumbs.db
