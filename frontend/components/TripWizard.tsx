@@ -231,19 +231,24 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
     <section ref={ref} id="plan" className="section-pad relative">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 text-center">
-          <div className="text-xs uppercase tracking-[0.4em] text-inkmist mb-4">Plan, step by step</div>
-          <h2 className="h-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-balance">
+          <div className="h-hand text-3xl text-coral mb-2">— my next trip —</div>
+          <h2 className="h-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-balance text-ink">
             Tell us how you <span className="italic txt-gradient">travel.</span>
           </h2>
-          <p className="mt-4 text-sm text-inkmist">
-            Prices in <span className="font-mono text-ink">{region.currency}</span> · region {region.flag} {region.label}
+          <div className="doodle-divider w-72 mx-auto mt-4" />
+          <p className="mt-3 h-hand text-2xl text-inkmist">
+            Prices in <span className="text-ink">{region.currency}</span> · region {region.flag} {region.label}
           </p>
         </div>
 
         <Stepper step={Math.min(step, STEPS.length - 1)} total={STEPS.length} hasPlan={!!plan} />
 
-        <div className="mt-8 glass rounded-3xl p-5 md:p-8 ring-1 ring-ink/15 shadow-2xl"
+        <div className="mt-8 diary-page p-6 md:p-10 pl-20 md:pl-24 relative"
              style={{ overflow: "visible" }}>
+          <div className="absolute top-4 right-5 h-hand text-2xl text-inkmist/70">
+            — page {Math.min(step + 1, STEPS.length)} / {STEPS.length} —
+          </div>
+          <div className="page-corner" />
           <AnimatePresence mode="wait">
             {step === 0 && (
               <StepWrap key="step0">
@@ -268,18 +273,23 @@ const TripWizard = forwardRef<HTMLDivElement>((_, ref) => {
                     <div className="mt-0.5 font-medium">{nights} night{nights > 1 ? "s" : ""}</div>
                   </div>
                 </div>
-                <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-inkmist">
-                  <span className="uppercase tracking-widest">Popular:</span>
-                  {POPULAR_DESTS.map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => { set("destination", d); set("destination_label", d); }}
-                      className={cn(
-                        "rounded-full px-3 py-1 transition",
-                        state.destination === d ? "bg-ink text-cream" : "bg-paper hover:bg-paper text-ink"
-                      )}
-                    >{d}</button>
-                  ))}
+                <div className="mt-6">
+                  <div className="h-hand text-2xl text-inkmist mb-2">scribbled favorites ↓</div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {POPULAR_DESTS.map((d, i) => (
+                      <button
+                        key={d}
+                        onClick={() => { set("destination", d); set("destination_label", d); }}
+                        className={cn(
+                          "sticky-note h-hand text-2xl",
+                          i % 3 === 0 && "sticky-pink",
+                          i % 3 === 1 && "sticky-blue",
+                          i % 3 === 2 && "sticky-green",
+                          state.destination === d && "ring-2 ring-ink/40"
+                        )}
+                      >{d}</button>
+                    ))}
+                  </div>
                 </div>
               </StepWrap>
             )}
@@ -548,17 +558,17 @@ function StepWrap({ children }: { children: React.ReactNode }) {
 
 function StepHeader({ title, sub }: { title: string; sub: string }) {
   return (
-    <div className="mb-6">
-      <h3 className="h-display text-3xl sm:text-4xl">{title}</h3>
-      <p className="mt-1 text-sm text-inkmist">{sub}</p>
+    <div className="mb-7">
+      <h3 className="h-display text-3xl sm:text-4xl text-ink underline-doodle">{title}</h3>
+      <p className="mt-3 h-hand text-2xl text-inkmist">{sub}</p>
     </div>
   );
 }
 
 function Section({ title, icon, children }: { title: string; icon?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="mt-5 first:mt-0">
-      <div className="text-[10px] uppercase tracking-[0.3em] text-inkmist mb-2 flex items-center gap-2">
+    <div className="mt-6 first:mt-0">
+      <div className="h-hand text-2xl text-ink mb-2 flex items-center gap-2">
         {icon} {title}
       </div>
       {children}
@@ -582,10 +592,10 @@ function ChipRow({
             key={it.id}
             onClick={() => onPick(it.id)}
             className={cn(
-              "rounded-full px-4 py-1.5 text-sm transition border",
+              "rounded-full px-4 py-1.5 text-sm transition border-2",
               isActive
-                ? "bg-ink text-cream border-ink"
-                : "border-ink/15 bg-cream text-ink hover:bg-paper"
+                ? "bg-ink text-cream border-ink shadow-[2px_2px_0_rgba(29,24,20,0.6)]"
+                : "border-ink/30 bg-cream text-ink hover:bg-paper hover:border-ink"
             )}
           >
             {it.label}
@@ -666,18 +676,18 @@ function Summary({ title, rows }: { title: string; rows: [string, string][] }) {
 
 function ResultsHeader({ plan, format, onEdit }: { plan: TripPlan; format: (n: number) => string; onEdit: () => void }) {
   return (
-    <div className="glass rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4">
+    <div className="ticket-stub flex flex-wrap items-center justify-between gap-4 relative">
       <div>
-        <div className="text-xs uppercase tracking-[0.3em] text-inkmist">Estimated total</div>
-        <div className="h-display text-4xl">
+        <div className="h-hand text-2xl text-coral">trip total ~</div>
+        <div className="h-display text-4xl text-ink">
           {plan.estimated_total_usd ? format(plan.estimated_total_usd) : "—"}
         </div>
-        <div className="text-sm text-inkmist mt-1">
-          Based on cheapest flight + hotel × nights. Excludes meals, transit, tickets.
+        <div className="text-xs text-inkmist mt-1 italic">
+          Cheapest flight + hotel × nights · meals & tickets not included.
         </div>
       </div>
-      <button onClick={onEdit} className="rounded-full glass px-5 py-2 text-sm hover:bg-paper transition">
-        Edit trip
+      <button onClick={onEdit} className="rounded-full border-2 border-ink/30 hover:border-ink bg-cream px-5 py-2 text-sm font-medium text-ink transition">
+        ✎ Edit trip
       </button>
     </div>
   );
@@ -917,7 +927,7 @@ function FlightsList({ plan, format }: { plan: TripPlan; format: (n: number) => 
         <motion.div
           key={i}
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
-          className="glass rounded-2xl p-4 sm:p-5 flex items-center gap-4 sm:gap-6 hover:bg-paper transition group"
+          className="ticket-stub flex items-center gap-4 sm:gap-6 hover:shadow-md transition group"
         >
           {f.airline_logo ? (
             <img src={f.airline_logo} alt={f.airline} className="h-8 w-8 rounded-lg bg-white object-contain shrink-0" />

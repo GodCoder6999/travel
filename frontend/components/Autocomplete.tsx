@@ -142,10 +142,10 @@ export function Autocomplete({
 
   return (
     <div ref={wrap} className={cn("relative", className)}>
-      <label className="rounded-xl bg-white/[0.03] ring-1 ring-white/10 px-4 py-2.5 block focus-within:ring-mist/40 transition">
-        <div className="text-[10px] uppercase tracking-[0.25em] text-mist/40 flex items-center justify-between">
+      <label className="rounded-xl bg-cream border border-ink/15 px-4 py-2.5 block focus-within:border-ink/40 focus-within:shadow-sm transition">
+        <div className="text-[10px] uppercase tracking-[0.25em] text-inkmist flex items-center justify-between">
           <span>{label}</span>
-          {loading && <Loader2 className="h-3 w-3 animate-spin text-mist/40" />}
+          {loading && <Loader2 className="h-3 w-3 animate-spin text-inkmist" />}
         </div>
         <input
           ref={inputRef}
@@ -156,7 +156,7 @@ export function Autocomplete({
           placeholder={placeholder}
           autoComplete="off"
           spellCheck={false}
-          className="mt-0.5 w-full bg-transparent outline-none text-mist placeholder:text-mist/30"
+          className="mt-0.5 w-full bg-transparent outline-none text-ink placeholder:text-ink/30"
         />
       </label>
 
@@ -167,12 +167,12 @@ export function Autocomplete({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.14 }}
-            style={{ backgroundColor: "rgba(10,10,15,0.96)", backdropFilter: "blur(20px)" }}
-            className="absolute left-0 right-0 top-full mt-2 rounded-2xl ring-1 ring-white/15 shadow-2xl overflow-hidden z-[80]"
+            style={{ backgroundColor: "rgba(255,249,238,0.98)", backdropFilter: "blur(10px)" }}
+            className="absolute left-0 right-0 top-full mt-2 rounded-2xl border border-ink/15 shadow-xl overflow-hidden z-[80]"
           >
             <div className="max-h-72 overflow-y-auto py-1">
               {items.length === 0 && !loading && (
-                <div className="px-4 py-3 text-sm text-mist/40 flex items-center gap-2">
+                <div className="px-4 py-3 text-sm text-inkmist flex items-center gap-2">
                   <Search className="h-3.5 w-3.5" /> No matches
                 </div>
               )}
@@ -183,13 +183,13 @@ export function Autocomplete({
                   onMouseDown={(e) => { e.preventDefault(); pick(s); }}
                   className={cn(
                     "w-full text-left px-4 py-2.5 flex items-center gap-3 transition",
-                    active === i ? "bg-white/10" : "hover:bg-white/5"
+                    active === i ? "bg-paper" : "hover:bg-paper/60"
                   )}
                 >
-                  {s.hint && <span className="text-xs font-mono rounded bg-white/10 px-2 py-1">{s.hint}</span>}
+                  {s.hint && <span className="text-xs font-mono rounded bg-paper border border-ink/15 text-ink px-2 py-1">{s.hint}</span>}
                   <div className="flex-1 min-w-0">
-                    <div className="truncate text-sm">{s.primary}</div>
-                    {s.secondary && <div className="text-xs text-mist/40 truncate">{s.secondary}</div>}
+                    <div className="truncate text-sm text-ink">{s.primary}</div>
+                    {s.secondary && <div className="text-xs text-inkmist truncate">{s.secondary}</div>}
                   </div>
                 </button>
               ))}

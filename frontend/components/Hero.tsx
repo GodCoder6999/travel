@@ -41,18 +41,19 @@ export default function Hero({ onPlan }: { onPlan: () => void }) {
           style={{ y: yTitle, opacity, scale }}
           className="relative z-20 flex h-full flex-col items-center justify-center px-6 text-center"
         >
-          <span className="mb-6 inline-flex items-center gap-2 sticker text-xs tracking-widest uppercase">
+          <span className="mb-4 inline-flex items-center gap-2 sticker text-xs tracking-widest uppercase">
             <span className="h-1.5 w-1.5 rounded-full bg-coral animate-pulse" />
             A travel diary that plans itself
           </span>
+          <div className="h-hand text-3xl text-coral -rotate-2 mb-2">~ dear journal ~</div>
           <h1 className="h-display font-bold leading-[0.9] tracking-tight text-balance text-ink"
               style={{ fontSize: "clamp(2.75rem, 11vw, 10rem)" }}>
             <span className="block">Plan trips</span>
             <span className="block italic txt-gradient">like a wanderer.</span>
           </h1>
-          <p className="mt-6 max-w-xl mx-auto text-sm sm:text-base md:text-lg text-inkmist text-balance">
-            Every flight, hotel, attraction, forecast, and visa stitched
-            together — wrapped in a 3D postcard you can scroll through.
+          <p className="mt-6 max-w-xl mx-auto h-hand text-2xl sm:text-3xl text-inkmist text-balance">
+            Every flight, hotel, attraction, forecast & visa —
+            scrapbooked into a single page you can scroll through.
           </p>
           <div className="mt-10 flex items-center justify-center gap-3 pointer-events-auto flex-wrap">
             <button

@@ -146,3 +146,129 @@ html { scroll-behavior: auto; }
 
 .perspective { perspective: 1400px; }
 .card-3d { transform-style: preserve-3d; transition: transform 600ms cubic-bezier(.2,.8,.2,1); }
+
+/* =============== Travel-Diary core =============== */
+
+/* Notebook-paper lined background */
+.diary-page {
+  background-color: #fff9ee;
+  background-image:
+    /* faint red margin line on the left */
+    linear-gradient(to right, transparent 56px, rgba(255,106,91,0.35) 56px, rgba(255,106,91,0.35) 57px, transparent 57px),
+    /* horizontal ruled lines */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 31px,
+      rgba(91,159,205,0.22) 31px 32px
+    );
+  background-attachment: local;
+  border: 1px solid rgba(29,24,20,0.10);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 rgba(29,24,20,0.04),
+    0 12px 32px -16px rgba(29,24,20,0.18);
+  position: relative;
+}
+
+/* binder holes on left margin */
+.diary-page::before {
+  content: "";
+  position: absolute;
+  left: 18px; top: 8%; bottom: 8%;
+  width: 14px;
+  background-image: radial-gradient(circle, rgba(29,24,20,0.18) 0 5px, transparent 6px);
+  background-size: 14px 60px;
+  background-repeat: repeat-y;
+  pointer-events: none;
+}
+
+/* Deckle / torn edges on top + bottom */
+.deckle-top {
+  mask-image: radial-gradient(circle at 8px 0, transparent 6px, #000 7px);
+  -webkit-mask-image: radial-gradient(circle at 8px 0, transparent 6px, #000 7px);
+  mask-size: 16px 100%;
+  -webkit-mask-size: 16px 100%;
+}
+
+/* Sticky note (yellow with shadow + slight tilt) */
+.sticky-note {
+  background: linear-gradient(180deg, #fff2b3 0%, #ffe88a 100%);
+  padding: 12px 16px;
+  border-radius: 2px;
+  box-shadow:
+    0 1px 2px rgba(29,24,20,0.06),
+    0 6px 14px -6px rgba(29,24,20,0.20);
+  position: relative;
+  transform: rotate(-1.4deg);
+  transition: transform 250ms ease;
+  border: 1px solid rgba(245, 185, 78, 0.45);
+  color: #1d1814;
+}
+.sticky-note:nth-of-type(even) { transform: rotate(1.2deg); }
+.sticky-note:hover { transform: rotate(0) translateY(-2px); }
+
+/* Sticky note in pink/blue/green variants */
+.sticky-pink { background: linear-gradient(180deg, #ffd7d2, #ffb8af); border-color: rgba(255,106,91,0.4); }
+.sticky-blue { background: linear-gradient(180deg, #cfe4f4, #a8d0ea); border-color: rgba(91,159,205,0.45); }
+.sticky-green { background: linear-gradient(180deg, #d8e8d2, #b3d2ac); border-color: rgba(127,165,122,0.45); }
+
+/* Ticket stub */
+.ticket-stub {
+  position: relative;
+  background: #fff9ee;
+  border: 1px dashed rgba(29,24,20,0.25);
+  border-radius: 4px;
+  padding: 14px 18px;
+}
+.ticket-stub::before, .ticket-stub::after {
+  content: ""; position: absolute; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fbf6ec; border: 1px solid rgba(29,24,20,0.12);
+}
+.ticket-stub::before { left: -8px; }
+.ticket-stub::after  { right: -8px; }
+
+/* Coffee ring stain */
+.coffee-stain {
+  position: absolute;
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  border: 6px solid rgba(166, 110, 60, 0.28);
+  filter: blur(0.3px);
+  opacity: 0.55;
+  pointer-events: none;
+  transform: rotate(8deg);
+}
+
+/* Underline doodle */
+.underline-doodle {
+  position: relative; display: inline-block;
+}
+.underline-doodle::after {
+  content: "";
+  position: absolute;
+  left: 4%; right: 4%; bottom: -6px;
+  height: 10px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'><path d='M2 6 C 30 1, 60 11, 90 6 S 160 1, 198 6' fill='none' stroke='%23ff6a5b' stroke-width='2.5' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* Hand-drawn divider */
+.doodle-divider {
+  height: 24px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 24'><path d='M10 12 C 100 4, 200 22, 300 12 S 500 4, 590 14' fill='none' stroke='%231d1814' stroke-width='1.5' stroke-linecap='round'/><circle cx='8' cy='12' r='2.5' fill='%231d1814'/><circle cx='592' cy='14' r='2.5' fill='%231d1814'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+  opacity: 0.6;
+}
+
+/* Page corner curl */
+.page-corner {
+  position: absolute; bottom: 0; right: 0;
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, transparent 50%, rgba(29,24,20,0.08) 50%);
+  border-bottom-right-radius: 12px;
+  pointer-events: none;
+}
