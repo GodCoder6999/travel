@@ -13,11 +13,26 @@ const TEX = {
   clouds: "/textures/earth_clouds.jpg",
 };
 
+function useOptionalTexture(url: string): THREE.Texture | null {
+  const [tex, setTex] = useState<THREE.Texture | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch(url, { method: "HEAD" }).then((r) => {
+      if (!r.ok || cancelled) return;
+      new THREE.TextureLoader().load(url, (t) => {
+        if (!cancelled) setTex(t);
+      });
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [url]);
+  return tex;
+}
+
 function RealEarth({ scrollY }: { scrollY: { current: number } }) {
-  const [day, normal, spec, clouds] = useLoader(THREE.TextureLoader, [
-    TEX.day, TEX.normal, TEX.spec, TEX.clouds,
-  ]);
-  // sRGB color space for the base color map
+  // Day + clouds required; normal + spec optional (probe so missing .tif/.jpg doesn't break).
+  const [day, clouds] = useLoader(THREE.TextureLoader, [TEX.day, TEX.clouds]);
+  const normal = useOptionalTexture(TEX.normal);
+  const spec = useOptionalTexture(TEX.spec);
   day.colorSpace = THREE.SRGBColorSpace;
 
   const earthRef = useRef<THREE.Mesh>(null!);
@@ -41,10 +56,10 @@ function RealEarth({ scrollY }: { scrollY: { current: number } }) {
       <Sphere ref={earthRef} args={[1.6, 128, 128]}>
         <meshStandardMaterial
           map={day}
-          normalMap={normal}
-          normalScale={new THREE.Vector2(0.85, 0.85)}
-          roughnessMap={spec}
-          roughness={0.9}
+          normalMap={normal || undefined}
+          normalScale={normal ? new THREE.Vector2(0.85, 0.85) : undefined}
+          roughnessMap={spec || undefined}
+          roughness={spec ? 0.9 : 0.7}
           metalness={0.05}
         />
       </Sphere>
