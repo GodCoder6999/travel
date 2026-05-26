@@ -1,10 +1,11 @@
 "use client";
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 
 type Mode = "walk" | "metro" | "taxi" | "drive" | "train" | "flight";
 
 export function TransportIcon({ mode, size = 48 }: { mode: Mode; size?: number }) {
-  const Map: Record<Mode, JSX.Element> = {
+  const Map: Record<Mode, ReactNode> = {
     walk: <WalkIcon size={size} />,
     metro: <MetroIcon size={size} />,
     taxi: <TaxiIcon size={size} />,
