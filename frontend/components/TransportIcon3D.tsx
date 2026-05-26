@@ -27,22 +27,23 @@ const PROFILE: Record<Mode, {
   walk:   { spin: 0.0, bobAmp: 0.06, bobSpeed: 3.5 },
 };
 
-// Target fit size — model gets auto-scaled so its largest dimension equals this
-const FIT_SIZE = 1.6;
+// Target fit size — model auto-scaled so its largest dim equals this.
+// Must be smaller than the vertical/horizontal frustum at camera Z.
+// Camera z=3.6 + fov=24 → view height = 2 * 3.6 * tan(12°) ≈ 1.53. Fit at 1.0 = comfy margin.
+const FIT_SIZE = 1.0;
 
 function GLTFThing({ mode }: { mode: Mode }) {
   const { scene } = useGLTF(MODEL_URL[mode]);
   const fitted = useMemo(() => {
     const c = scene.clone(true);
-    const box = new THREE.Box3().setFromObject(c);
+    // Force-update matrices so SkinnedMesh / rigged GLBs report real bbox
+    c.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(c, true);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
-    // Re-center on origin
     c.position.sub(center);
-    // Scale longest axis to FIT_SIZE
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
-    const s = FIT_SIZE / maxDim;
-    c.scale.setScalar(s);
+    c.scale.setScalar(FIT_SIZE / maxDim);
     return c;
   }, [scene]);
 
@@ -85,7 +86,7 @@ export function TransportIcon3D({ mode, size = 64 }: { mode: Mode; size?: number
     <div style={{ width: size, height: size }} className="inline-block">
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [0, 0.4, 2.6], fov: 30 }}
+        camera={{ position: [0, 0.15, 3.6], fov: 24 }}
         frameloop="always"
         gl={{ alpha: true, antialias: true }}
       >
