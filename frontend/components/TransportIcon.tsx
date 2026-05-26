@@ -34,8 +34,6 @@ function useHas(url: string): boolean | null {
 
 export function TransportIcon({ mode, size = 48 }: { mode: Mode; size?: number }) {
   const has3D = useHas(MODEL_URLS[mode]);
-  if (has3D) return <Icon3D mode={mode} size={size} />;
-  // probing or 404 → animated SVG fallback
   const Map: Record<Mode, ReactNode> = {
     walk: <WalkIcon size={size} />,
     metro: <MetroIcon size={size} />,
@@ -44,7 +42,18 @@ export function TransportIcon({ mode, size = 48 }: { mode: Mode; size?: number }
     train: <TrainIcon size={size} />,
     flight: <FlightIcon size={size} />,
   };
-  return Map[mode] || <FlightIcon size={size} />;
+  const svg = Map[mode] || <FlightIcon size={size} />;
+  // Stack: SVG always rendered as visible base; 3D Canvas overlays once loaded.
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <div className="absolute inset-0">{svg}</div>
+      {has3D && (
+        <div className="absolute inset-0">
+          <Icon3D mode={mode} size={size} />
+        </div>
+      )}
+    </div>
+  );
 }
 
 const COLORS = {

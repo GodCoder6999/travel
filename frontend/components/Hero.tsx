@@ -29,17 +29,15 @@ export default function Hero({ onPlan }: { onPlan: () => void }) {
         <div className="absolute top-[12%] right-[12%] w-72 h-72 rounded-full bg-sun/40 blur-3xl" />
         <div className="absolute bottom-[18%] left-[8%] w-80 h-80 rounded-full bg-sky/30 blur-3xl" />
 
-        {/* Globe — contained, behind content, with vignette */}
+        {/* Globe — small, lower-right, peeking from behind so headline reads cleanly */}
         <div className="absolute inset-0 z-0">
-          <div className="relative w-full h-full">
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-auto w-[70vmin] h-[70vmin] max-w-[640px] max-h-[640px]">
-              <Globe3D scrollY={scrollY} />
-            </div>
+          <div className="absolute right-[-8%] bottom-[-12%] w-[55vmin] h-[55vmin] max-w-[520px] max-h-[520px] sm:right-[-5%] sm:bottom-[-8%]">
+            <Globe3D scrollY={scrollY} />
           </div>
         </div>
 
-        {/* Soft cream wash so text reads over the globe */}
-        <div className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(251,246,236,0)_30%,rgba(251,246,236,0.6)_55%,rgba(251,246,236,0.95)_85%)]" />
+        {/* Cream vignette around globe edges so it blends into the page */}
+        <div className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(ellipse_at_85%_85%,transparent_0%,transparent_35%,rgba(251,246,236,0.85)_75%)]" />
 
         {/* Floating transport stickers (smaller, edge-anchored) */}
         <FloatingDecorations />
@@ -54,8 +52,11 @@ export default function Hero({ onPlan }: { onPlan: () => void }) {
           </span>
           <div className="h-hand text-3xl text-coral -rotate-2 mb-2">~ dear journal ~</div>
           <h1
-            className="h-display font-bold leading-[0.9] tracking-tight text-balance text-ink drop-shadow-[0_2px_8px_rgba(251,246,236,0.85)]"
-            style={{ fontSize: "clamp(2.5rem, 9vw, 8rem)" }}
+            className="h-display font-bold leading-[0.9] tracking-tight text-balance text-ink"
+            style={{
+              fontSize: "clamp(2.5rem, 8vw, 7rem)",
+              textShadow: "0 1px 0 #fff9ee, 0 2px 16px rgba(251,246,236,0.95), 0 0 40px rgba(251,246,236,0.7)",
+            }}
           >
             <span className="block">Plan trips</span>
             <span className="block italic txt-gradient">like a wanderer.</span>
